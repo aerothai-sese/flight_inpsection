@@ -4,3 +4,4 @@ pymongo
 boto3
 botocore
 scapy
+asterix4py
