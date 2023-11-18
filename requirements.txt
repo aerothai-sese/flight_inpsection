@@ -3,4 +3,3 @@ plotly
 pymongo
 boto3
 botocore
-scapy
