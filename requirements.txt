@@ -1,0 +1,5 @@
+streamlit
+plotly
+pymongo
+boto3
+botocore
