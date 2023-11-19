@@ -307,6 +307,7 @@ def write_meta(meta,key):
     return None
 
 def read_meta(cat):
+    st.write(r2_endpoint,r2_access,r2_secret)
     s3_client = boto3.resource('s3',
 	   endpoint_url = r2_endpoint,
 	   aws_access_key_id=r2_access,
