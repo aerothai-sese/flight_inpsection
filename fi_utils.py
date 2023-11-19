@@ -75,7 +75,7 @@ def save_r2_files(uploaded_files,bucket,object_name=None):
         try :
             s3_client.upload_fileobj(filename,bucket,filename.name)
             #response = s3_client.meta.client.upload_file(filename.name,bucket,filename)
-	    s3_client.close()
+            s3_client.close()
         except ClientError as e:
             logging.error(e)
             
@@ -320,7 +320,7 @@ def read_meta(cat):
             key ="metadata_ssr"
         
         response = s3_client.get_object(Bucket='etc', Key=key)
-	s3_client.close()
+        s3_client.close()
         # Access the object's content
         object_content = response['Body'].read()
         return json.loads(object_content.decode('utf-8'))
