@@ -21,19 +21,24 @@ import boto3
 import requests 
 from botocore.exceptions import ClientError
 
+r2_endpoint = st.secrets.cloudflare.endpoint_url 
+r2_access =  st.secrets.cloudflare.r2_access
+r2_secret =  st.secrets.cloudflare.r2_secret
+
+mongo_user = st.secrets.mongo.user
+mongo_password = st.secrets.mongo.password
+
 # Upload to cloudflare
 def upload_file_s3(filename,bucket,object_name=None):
     if object_name is None :
         object_name = os.path.basename(filename)
-        
-    #s3_client = boto3.client('s3')
     s3_client = boto3.resource('s3',
-                   endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
-                   aws_access_key_id="018907fc93e66bd3ebadbd7ec5ada158",
-                   aws_secret_access_key="fb56a55259e3701046c666413d4fec4cbd6d595cedf8f40623f75ce0e089bf40")
-
+                   endpoint_url = r2_endpoint,
+                   aws_access_key_id=r2_access,
+                   aws_secret_access_key=r2_secret)
     try :
         response = s3_client.meta.client.upload_file(filename,bucket,object_name)
+	s3_client.close()
     except ClientError as e:
         logging.error(e)
         return False
@@ -59,12 +64,10 @@ def flatten_json(y):
     return out
 
 def save_r2_files(uploaded_files,bucket,object_name=None):
-    #s3_client = boto3.client('s3')
-    s3_client = boto3.client('s3',
-                   endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
-                   aws_access_key_id="49905d33e22c5eba6b14fa0f9189031b",
-                   aws_secret_access_key="93ea525c94779c4250490862a2d656d8e945d803d0daf2714a90accc28b5c9ee")
-
+    s3_client = boto3.resource('s3',
+                   endpoint_url = r2_endpoint,
+                   aws_access_key_id=r2_access,
+                   aws_secret_access_key=r2_secret)
     for filename in uploaded_files:
         #if object_name is None :
         #    object_name = os.path.basename(filename)
@@ -72,6 +75,7 @@ def save_r2_files(uploaded_files,bucket,object_name=None):
         try :
             s3_client.upload_fileobj(filename,bucket,filename.name)
             #response = s3_client.meta.client.upload_file(filename.name,bucket,filename)
+	    s3_client.close()
         except ClientError as e:
             logging.error(e)
             
@@ -210,8 +214,10 @@ def df2json(df):
 def insert_to_mongo(list_json,site):
     from pymongo.mongo_client import MongoClient
     from pymongo.server_api import ServerApi
+	
+    uri = f"mongodb+srv://{mongo_user}:{mongo_password}@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
 
-    uri = "mongodb+srv://art_sese_fi_2023:sese_art_2023_fi@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
+    #uri = "mongodb+srv://art_sese_fi_2023:sese_art_2023_fi@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(uri,server_api=ServerApi('1'))
 
     mydb = client ['FLIGHT_INSPECTION_DB']
@@ -226,7 +232,7 @@ def get_flight():
     from pymongo.mongo_client import MongoClient
     from pymongo.server_api import ServerApi
     ca = certifi.where()
-    uri = "mongodb+srv://art_sese_fi_2023:sese_art_2023_fi@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
+    uri = f"mongodb+srv://{mongo_user}:{mongo_password}@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(uri,server_api=ServerApi('1'))
 
     mydb = client ['FLIGHT_INSPECTION_DB']
@@ -238,7 +244,7 @@ def get_flight():
 
 def qry(tx,bucket):
 
-    uri = "mongodb+srv://art_sese_fi_2023:sese_art_2023_fi@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
+    uri = f"mongodb+srv://{mongo_user}:{mongo_password}@cluster0.gwplkpc.mongodb.net/?retryWrites=true&w=majority"
     client = MongoClient(uri,server_api=ServerApi('1'))
 
     mydb = client ['FLIGHT_INSPECTION_DB']
@@ -277,10 +283,10 @@ def create_meta(df,site,tx):
 # metadata.json structure {"uploaded_metadata : [{"dof":...,"start_time":...,"end_time":....} 
 #   ,"cs": ...,"tx":[...] ,...]}
 def write_meta(meta,key):
-    s3_client = boto3.client('s3',
-               endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
-               aws_access_key_id="49905d33e22c5eba6b14fa0f9189031b",
-               aws_secret_access_key="93ea525c94779c4250490862a2d656d8e945d803d0daf2714a90accc28b5c9ee")
+    s3_client = boto3.resource('s3',
+	   endpoint_url = r2_endpoint,
+	   aws_access_key_id=r2_access,
+	   aws_secret_access_key=r2_secret)
     try:
 
         response = s3_client.get_object(Bucket='etc', Key=key)
@@ -295,16 +301,16 @@ def write_meta(meta,key):
         json_string = json.dumps(metadata)
         json_file = io.BytesIO(json_string.encode('utf-8'))  
         s3_client.upload_fileobj(json_file,'etc',key)
-        
+        s3_client.close()
     except s3_client.exceptions.NoSuchKey:
         print(f"The specified object with key does not exist in the bucket.")
     return None
 
 def read_meta(cat):
-    s3_client = boto3.client('s3',
-               endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
-               aws_access_key_id="49905d33e22c5eba6b14fa0f9189031b",
-               aws_secret_access_key="93ea525c94779c4250490862a2d656d8e945d803d0daf2714a90accc28b5c9ee")
+    s3_client = boto3.resource('s3',
+	   endpoint_url = r2_endpoint,
+	   aws_access_key_id=r2_access,
+	   aws_secret_access_key=r2_secret)
     try:
     # Use the get_object method to retrieve the object by name
 
@@ -314,7 +320,7 @@ def read_meta(cat):
             key ="metadata_ssr"
         
         response = s3_client.get_object(Bucket='etc', Key=key)
-
+	s3_client.close()
         # Access the object's content
         object_content = response['Body'].read()
         return json.loads(object_content.decode('utf-8'))
