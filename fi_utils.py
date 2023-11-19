@@ -32,7 +32,7 @@ mongo_password = st.secrets["mongo"]["password"]
 def upload_file_s3(filename,bucket,object_name=None):
     if object_name is None :
         object_name = os.path.basename(filename)
-    s3_client = boto3.resource('s3',
+    s3_client = boto3.client('s3',
                    endpoint_url = r2_endpoint,
                    aws_access_key_id=r2_access,
                    aws_secret_access_key=r2_secret)
@@ -64,7 +64,7 @@ def flatten_json(y):
     return out
 
 def save_r2_files(uploaded_files,bucket,object_name=None):
-    s3_client = boto3.resource('s3',
+    s3_client = boto3.client('s3',
                    endpoint_url = r2_endpoint,
                    aws_access_key_id=r2_access,
                    aws_secret_access_key=r2_secret)
@@ -283,7 +283,7 @@ def create_meta(df,site,tx):
 # metadata.json structure {"uploaded_metadata : [{"dof":...,"start_time":...,"end_time":....} 
 #   ,"cs": ...,"tx":[...] ,...]}
 def write_meta(meta,key):
-    s3_client = boto3.resource('s3',
+    s3_client = boto3.client('s3',
 	   endpoint_url = r2_endpoint,
 	   aws_access_key_id=r2_access,
 	   aws_secret_access_key=r2_secret)
@@ -308,10 +308,10 @@ def write_meta(meta,key):
 
 def read_meta(cat):
     
-    s3_client = boto3.resource('s3',
-	   endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
-	   aws_access_key_id="49905d33e22c5eba6b14fa0f9189031b",
-	   aws_secret_access_key="93ea525c94779c4250490862a2d656d8e945d803d0daf2714a90accc28b5c9ee")
+    s3_client = boto3.client('s3',
+	   endpoint_url = r2_endpoint,
+	   aws_access_key_id=r2_access,
+	   aws_secret_access_key=r2_secret)
     st.write(s3_client)
     
     try:
