@@ -38,7 +38,7 @@ def upload_file_s3(filename,bucket,object_name=None):
                    aws_secret_access_key=r2_secret)
     try :
         response = s3_client.meta.client.upload_file(filename,bucket,object_name)
-	s3_client.close()
+        s3_client.close()
     except ClientError as e:
         logging.error(e)
         return False
