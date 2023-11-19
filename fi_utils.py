@@ -309,9 +309,9 @@ def write_meta(meta,key):
 def read_meta(cat):
     
     s3_client = boto3.resource('s3',
-	   endpoint_url = r2_endpoint,
-	   aws_access_key_id=r2_access,
-	   aws_secret_access_key=r2_secret)
+	   endpoint_url = "https://08a363948d25d8b910ac4826803b28f2.r2.cloudflarestorage.com",
+	   aws_access_key_id="49905d33e22c5eba6b14fa0f9189031b",
+	   aws_secret_access_key="93ea525c94779c4250490862a2d656d8e945d803d0daf2714a90accc28b5c9ee")
     st.write(s3_client)
     
     try:
