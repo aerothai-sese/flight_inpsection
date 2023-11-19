@@ -307,12 +307,12 @@ def write_meta(meta,key):
     return None
 
 def read_meta(cat):
-    st.write(r2_endpoint,r2_access,r2_secret)
+    
     s3_client = boto3.resource('s3',
 	   endpoint_url = r2_endpoint,
 	   aws_access_key_id=r2_access,
 	   aws_secret_access_key=r2_secret)
-    
+    st.write(s3_client)
     
     try:
     # Use the get_object method to retrieve the object by name
@@ -332,7 +332,6 @@ def read_meta(cat):
     except s3_client.exceptions.NoSuchKey:
         print(f"Metadata in etc bucket is missing.")
 
-    
 #plot part
 def plot_3d(df):
     x = df['042_X']
