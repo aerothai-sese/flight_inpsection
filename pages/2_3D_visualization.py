@@ -5,7 +5,7 @@ import pandas as pd
 
 
 st.header("Visualize")
-st.write(r2_endpoint)
+
 cat = st.selectbox('Please select asterix type',['ADSB', 'RADAR'])
 if cat =='ADSB':
 	site = st.selectbox('Please select ADSB site',['MK', 'HY','UB','SM','IN','UD'])
