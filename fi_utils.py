@@ -21,12 +21,12 @@ import boto3
 import requests 
 from botocore.exceptions import ClientError
 
-r2_endpoint = st.secrets.cloudflare.endpoint_url 
-r2_access =  st.secrets.cloudflare.r2_access
-r2_secret =  st.secrets.cloudflare.r2_secret
+r2_endpoint = st.secrets["cloudflare"]["endpoint_url"] 
+r2_access =  st.secrets["cloudflare]["r2_access"]
+r2_secret =  st.secrets["cloudflare]["r2_secret"]
 
-mongo_user = st.secrets.mongo.user
-mongo_password = st.secrets.mongo.password
+mongo_user = st.secrets["mongo"]["user"]
+mongo_password = st.secrets["mongo"]["password"]
 
 # Upload to cloudflare
 def upload_file_s3(filename,bucket,object_name=None):
