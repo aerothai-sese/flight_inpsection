@@ -378,10 +378,23 @@ def get_min_value(df,height):
     min_index = df_filter['040_RHO'].idxmin()
     return df.loc[min_index]
 
-def get_pattern(df):
-    ft = [10,20,30,50,70,100,150,200]
+def get_pattern(df,site):
+    list1 = ["PSL","DMA","CMP","HTY","SRT","SBA","UBL","CMA"]
+    list2 = ["ROT","CTR","PKT" ]
+    list3 = ["HHN"]
+    list4 = ["UDN"]
+
+    if site in list1:
+        list_ver = [10,20,30,50,70,100,150,200]
+    elif site in list2:
+        list_ver = [20,30,40,60,80,110,160,210]
+    elif site in list3:
+        list_ver = [10,20,30,50,70,100,150]
+    else :
+        list_ver = [17,27,37,57,77,107,160,200]
+
     pattern_max,pattern_min = [],[]
-    for i in ft:
+    for i in list_ver:
         pattern_max.append(get_max_value(df,i).to_dict())
         pattern_min.append(get_min_value(df,i).to_dict())
     return pattern_max,pattern_min
@@ -397,6 +410,7 @@ def get_bound(pattern_max,pattern_min):
     y_min = [i['090_FL'] for i in pattern_min]
     y_min.insert(0, 0)
     return x_max,y_max,x_min,y_min
+	
 def esttimate(x_max,y_max,x_min,y_min):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=x_max,y=y_max,line=dict(width=0.5),fill=None))
