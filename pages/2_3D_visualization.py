@@ -39,12 +39,22 @@ if selected_fi:
 		st.dataframe(df.head(200))
 
 	fig1 = plot_3d(df)
-	#pattern_max,pattern_min = get_pattern(df)
-	#x_max,y_max,x_min,y_min = get_bound(pattern_max,pattern_min)
-	#fig2 = esttimate(x_max,y_max,x_min,y_min)
-	viz = st.button("Visualize !") 
+
+	col1,col2 = st.columns(2)
+	
+	with col1:
+		viz = st.button("Visualize !") 
+	with col2:
+		delete = st.button("Delete datasets") 
+		st.error("Warning : This datasets will be deleted.")
+
 	if viz :
 		st.header('Historical flight inspection plot', divider='rainbow')
 		st.plotly_chart(fig1,use_container_width=True)
 		st.header('Estimation of the radiation pattern', divider='rainbow')
+		
+		pattern_max,pattern_min = get_pattern(df,site)
+		x_max,y_max,x_min,y_min = get_bound(pattern_max,pattern_min)
+		fig2 = esttimate(x_max,y_max,x_min,y_min)
 		st.plotly_chart(fig2,use_container_width=True)
+
