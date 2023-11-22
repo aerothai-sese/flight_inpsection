@@ -367,17 +367,27 @@ def plot_3d(df):
         scaleratio = 1,
       )
     return fig
-
+	
 def get_max_value(df,height):
-    df_filter = df[(df['090_FL'] >= height-1) & (df['090_FL'] <= height +1 )]
-    max_index = df_filter['040_RHO'].idxmax()
-    return df.loc[max_index]
 
+    df_filter = df[(df['090_FL'] >= height-1) & (df['090_FL'] <= height +1 )]
+    try:
+        max_index = df_filter['040_RHO'].idxmax()
+        return df.loc[max_index]
+    except:
+        null_df = pd.DataFrame({'090_FL': [height],
+               '040_RHO': [0]})
+        return null_df.iloc[0]
 def get_min_value(df,height):
     df_filter = df[(df['090_FL'] >= height-1) & (df['090_FL'] <= height +1 )]
-    min_index = df_filter['040_RHO'].idxmin()
-    return df.loc[min_index]
-
+    try:
+        min_index = df_filter['040_RHO'].idxmin()
+        return df.loc[min_index]
+    except:
+        null_df = pd.DataFrame({'090_FL': [height],
+       '040_RHO': [0]})
+        return null_df.iloc[0]
+	    
 def get_pattern(df,site):
     list1 = ["PSL","DMA","CMP","HTY","SRT","SBA","UBL"]
     list2 = ["ROT","CTR","PKT","CMA"]
