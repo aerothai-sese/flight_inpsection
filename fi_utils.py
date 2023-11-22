@@ -379,8 +379,8 @@ def get_min_value(df,height):
     return df.loc[min_index]
 
 def get_pattern(df,site):
-    list1 = ["PSL","DMA","CMP","HTY","SRT","SBA","UBL","CMA"]
-    list2 = ["ROT","CTR","PKT" ]
+    list1 = ["PSL","DMA","CMP","HTY","SRT","SBA","UBL"]
+    list2 = ["ROT","CTR","PKT","CMA"]
     list3 = ["HHN"]
     list4 = ["UDN"]
 
